@@ -65,7 +65,7 @@ body {
 }
 </style>
 
-<link rel="modulepreload" href="./bevy_game-9b222a122dc9064d.js" crossorigin="anonymous" integrity="sha384-uxwM2+WqIwVa371u9/6Y6a/+A3l1hLxjPeUJI0l1awt+BN+4EYthrfMyAL0cnc6x"><link rel="preload" href="./bevy_game-9b222a122dc9064d_bg.wasm" crossorigin="anonymous" integrity="sha384-XwGhwB511eLt+T6U+tgm1bYLASSV+6Uih5Aj7DoeO4Hwk2No3xbM7Zjd40vKXA8E" as="fetch" type="application/wasm"></head>
+<link rel="modulepreload" href="./bevy_game-9b222a122dc9064d.js" crossorigin="anonymous" integrity="sha384-9OSLiA7wE/O8eagZPK+ziGAYUFhkTa9lCox7/XiGrOJywNO/fEmv7Cr63roJtAFn"><link rel="preload" href="./bevy_game-9b222a122dc9064d_bg.wasm" crossorigin="anonymous" integrity="sha384-jvItHd88QSlvXWH/ipGBqasehIgSXhYLTqYRcbBvb8o3BHHvk4MUOuak/hR/OWfQ" as="fetch" type="application/wasm"></head>
 
 <body>
     <script>// Insert hack to make sound autoplay on Chrome as soon as the user interacts with the tab:
@@ -138,12 +138,6 @@ body {
         </canvas>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@farcaster/miniapp-sdk/dist/index.min.js"></script>
-    <!-- TODO: we probably want to call ready after bevy has done some loading -->
-    <script>
-        miniapp.sdk.actions.ready();
-    </script>
-
 <script type="module">
 import init, * as bindings from './bevy_game-9b222a122dc9064d.js';
 const wasm = await init({ module_or_path: './bevy_game-9b222a122dc9064d_bg.wasm' });
@@ -155,5 +149,12 @@ window.wasmBindings = bindings;
 dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
 
 </script></body>
+
+<script type="module">
+    import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk'
+
+    // TODO: do this **after** your app is fully loaded and ready to display
+    await sdk.actions.ready()
+</script>
 
 </html>
