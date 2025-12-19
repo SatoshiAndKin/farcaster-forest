@@ -325,16 +325,16 @@ function __wasm_bindgen_func_elem_85727(arg0, arg1, arg2) {
     wasm.__wasm_bindgen_func_elem_85727(arg0, arg1, addHeapObject(arg2));
 }
 
-function __wasm_bindgen_func_elem_88430(arg0, arg1, arg2) {
-    wasm.__wasm_bindgen_func_elem_88430(arg0, arg1, isLikeNone(arg2) ? 0 : addHeapObject(arg2));
-}
-
 function __wasm_bindgen_func_elem_81821(arg0, arg1, arg2, arg3) {
     wasm.__wasm_bindgen_func_elem_81821(arg0, arg1, addHeapObject(arg2), addHeapObject(arg3));
 }
 
 function __wasm_bindgen_func_elem_82198(arg0, arg1) {
     wasm.__wasm_bindgen_func_elem_82198(arg0, arg1);
+}
+
+function __wasm_bindgen_func_elem_88430(arg0, arg1, arg2) {
+    wasm.__wasm_bindgen_func_elem_88430(arg0, arg1, isLikeNone(arg2) ? 0 : addHeapObject(arg2));
 }
 
 const __wbindgen_enum_GamepadMappingType = ["", "standard"];
