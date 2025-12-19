@@ -65,7 +65,7 @@ body {
 }
 </style>
 
-<link rel="modulepreload" href="./bevy_game-196bac9bb1360ce4.js" crossorigin="anonymous" integrity="sha384-uQ4fWvHF8WjrljQsp5WXqJcDGMk396Wggdn7b2vXa9NcQYpGe3gYxHg9M7oa6GD/"><link rel="preload" href="./bevy_game-196bac9bb1360ce4_bg.wasm" crossorigin="anonymous" integrity="sha384-QRTx/HaQz/24EZnhWvCHWwQWRI29i2SHeWRQntl7MHK9/XnOWOj+lkb3mDxvR8Si" as="fetch" type="application/wasm"></head>
+<link rel="modulepreload" href="./bevy_game-196bac9bb1360ce4.js" crossorigin="anonymous" integrity="sha384-QaoNLzWg/AyqnUCwYjzKRwv1mYlAs3f47yPINj8pQsSi/LTvWHRFBRCrvoFufLMw"><link rel="preload" href="./bevy_game-196bac9bb1360ce4_bg.wasm" crossorigin="anonymous" integrity="sha384-+cjOZ+8rLMKBIDrqUCzXF5WPBZ0+5lDPEDVdPz1FFfXDKanXWNDjY5s5/rBRkqj7" as="fetch" type="application/wasm"></head>
 
 <body>
     <script>// Insert hack to make sound autoplay on Chrome as soon as the user interacts with the tab:
@@ -152,6 +152,9 @@ dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
 
 <script type="module">
     import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk'
+    import { Client } from 'https://esm.sh/@xmtp/browser-sdk'
+
+    // TODO: we need to get a signer to create the xmtp Client. then we need to pass messages between the client and the rust code
 
     // TODO: do this **after** your app is fully loaded and ready to display
     await sdk.actions.ready()
