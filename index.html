@@ -2,15 +2,18 @@
 <html lang="en">
 
 <head>
+    <base data-trunk-public-url />
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>Farcaster Forest</title>
+
     <link data-trunk rel="copy-dir" href="assets" />
     <link data-trunk rel="copy-dir" href="credits" />
     <link data-trunk rel="copy-dir" href=".well-known" />
-    <link data-trunk rel="copy-file" href="build/windows/icon.ico" />
-    <link rel="icon" href="icon.ico">
+    <link data-trunk rel="icon" type="image/ico" href="build/windows/icon.ico" />
     <link data-trunk rel="inline" href="build/web/styles.css" />
+    <link data-trunk rel="rust" data-wasm-opt="z" />
 
 </head>
 
@@ -22,24 +25,22 @@
             Javascript and support for canvas is required
         </canvas>
     </div>
+
+    <script type="module">
+        import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk'
+        import { Client } from 'https://esm.sh/@xmtp/browser-sdk'
+
+        const isMiniApp = await sdk.isInMiniApp()
+
+        if (isMiniApp) {
+            console.log("in a mini-app")
+
+            // TODO: do this **after** your app is fully loaded and ready to display
+            await sdk.actions.ready()
+        } else {
+            console.log("not in a mini-app")
+        }
+    </script>
 </body>
-
-<script type="module">
-    import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk'
-    import { Client } from 'https://esm.sh/@xmtp/browser-sdk'
-
-    // TODO: we need to get a signer to create the xmtp Client. then we need to pass messages between the client and the rust code
-
-    const isMiniApp = await sdk.isInMiniApp()
-
-    if (isMiniApp) {
-        console.log("in a mini-app")
-
-        // TODO: do this **after** your app is fully loaded and ready to display
-        await sdk.actions.ready()
-    } else {
-        console.log("not in a mini-app")
-    }
-</script>
 
 </html>
