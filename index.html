@@ -65,7 +65,7 @@ body {
 }
 </style>
 
-<link rel="modulepreload" href="./bevy_game-196bac9bb1360ce4.js" crossorigin="anonymous" integrity="sha384-QaoNLzWg/AyqnUCwYjzKRwv1mYlAs3f47yPINj8pQsSi/LTvWHRFBRCrvoFufLMw"><link rel="preload" href="./bevy_game-196bac9bb1360ce4_bg.wasm" crossorigin="anonymous" integrity="sha384-+cjOZ+8rLMKBIDrqUCzXF5WPBZ0+5lDPEDVdPz1FFfXDKanXWNDjY5s5/rBRkqj7" as="fetch" type="application/wasm"></head>
+<link rel="modulepreload" href="./bevy_game-196bac9bb1360ce4.js" crossorigin="anonymous" integrity="sha384-FF1/1Pq6Tdld5oVIHSAp2QhLkSl+qLTJsVafYKbrI4+4RFETiCa1HYTD03VIxeoJ"><link rel="preload" href="./bevy_game-196bac9bb1360ce4_bg.wasm" crossorigin="anonymous" integrity="sha384-M6jdinuwg9aIqgnvGVv8j3f9JbBM5taGedc8wYmtrxPar8DR/m0UMfhzALHFpHDe" as="fetch" type="application/wasm"></head>
 
 <body>
     <script>// Insert hack to make sound autoplay on Chrome as soon as the user interacts with the tab:
@@ -156,8 +156,16 @@ dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
 
     // TODO: we need to get a signer to create the xmtp Client. then we need to pass messages between the client and the rust code
 
-    // TODO: do this **after** your app is fully loaded and ready to display
-    await sdk.actions.ready()
+    const isMiniApp = await sdk.isInMiniApp()
+
+    if (isMiniApp) {
+        console.log("in a mini-app")
+
+        // TODO: do this **after** your app is fully loaded and ready to display
+        await sdk.actions.ready()
+    } else {
+        console.log("not in a mini-app")
+    }
 </script>
 
 </html>
