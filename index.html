@@ -66,20 +66,8 @@ body {
     z-index: 2;
 }
 </style>
-    
-<script type="module">
-import init, * as bindings from 'https://satoshiandkin.github.io/farcaster-forest/bevy_game-26ac404696d72175.js';
-const wasm = await init({ module_or_path: 'https://satoshiandkin.github.io/farcaster-forest/bevy_game-26ac404696d72175_bg.wasm' });
 
-
-window.wasmBindings = bindings;
-
-
-dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
-
-</script>
-
-<link rel="modulepreload" href="https://satoshiandkin.github.io/farcaster-forest/bevy_game-26ac404696d72175.js" crossorigin="anonymous" integrity="sha384-GGv589zANcUrk5khQolEtosFft1z8BDY3XikRG54jRrb+Ro2hM7YdKPvSmVvxFCJ"><link rel="preload" href="https://satoshiandkin.github.io/farcaster-forest/bevy_game-26ac404696d72175_bg.wasm" crossorigin="anonymous" integrity="sha384-pcfFYcdbWcSFHdZ6BYH/BWbl9S0La4u9sMcwWrHmS7kKRf62aRb5W89ztyjq8AJ3" as="fetch" type="application/wasm"></head>
+<link rel="modulepreload" href="https://satoshiandkin.github.io/farcaster-forest/bevy_game-e98f593383e875f7.js" crossorigin="anonymous" integrity="sha384-V4mfsbB+0fDyhfklD647mBbj4NybIOi3WKx5i3y3Al89l1mw/+teB7OU9w27Wf6j"><link rel="preload" href="https://satoshiandkin.github.io/farcaster-forest/bevy_game-e98f593383e875f7_bg.wasm" crossorigin="anonymous" integrity="sha384-nTBr/KVmKFEJmyu2mYSLO7s/uRAwUSAQccOSGSrkyAxbNqBt40Pef0wJek21S2l1" as="fetch" type="application/wasm"></head>
 
 <body>
     <script>// Insert hack to make sound autoplay on Chrome as soon as the user interacts with the tab:
@@ -167,6 +155,17 @@ dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
             console.log("not in a mini-app")
         }
     </script>
-</body>
+
+<script type="module">
+import init, * as bindings from 'https://satoshiandkin.github.io/farcaster-forest/bevy_game-e98f593383e875f7.js';
+const wasm = await init({ module_or_path: 'https://satoshiandkin.github.io/farcaster-forest/bevy_game-e98f593383e875f7_bg.wasm' });
+
+
+window.wasmBindings = bindings;
+
+
+dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+
+</script></body>
 
 </html>
