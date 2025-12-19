@@ -22,12 +22,13 @@
             Javascript and support for canvas is required
         </canvas>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@farcaster/miniapp-sdk/dist/index.min.js"></script>
-    <!-- TODO: we probably want to call ready after bevy has done some loading -->
-    <script>
-        miniapp.sdk.actions.ready();
-    </script>
 </body>
+
+<script type="module">
+    import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk'
+
+    // TODO: do this **after** your app is fully loaded and ready to display
+    await sdk.actions.ready()
+</script>
 
 </html>
