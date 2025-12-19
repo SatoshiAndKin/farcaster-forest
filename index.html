@@ -26,6 +26,9 @@
 
 <script type="module">
     import { sdk } from 'https://esm.sh/@farcaster/miniapp-sdk'
+    import { Client } from 'https://esm.sh/@xmtp/browser-sdk'
+
+    // TODO: we need to get a signer to create the xmtp Client. then we need to pass messages between the client and the rust code
 
     // TODO: do this **after** your app is fully loaded and ready to display
     await sdk.actions.ready()
