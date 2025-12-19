@@ -23,7 +23,7 @@ jobs:
           key: ${{ runner.os }}-cargo-test-${{ hashFiles('**/Cargo.toml') }}
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: stable
+          toolchain: nightly-2025-12-19
       - name: Install alsa and udev
         run: sudo apt-get update; sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev libxkbcommon-x11-0 libwayland-dev libxkbcommon-dev
         if: runner.os == 'linux'
@@ -44,7 +44,7 @@ jobs:
           key: ubuntu-latest-cargo-all-doc-tests-${{ hashFiles('**/Cargo.toml') }}
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: stable
+          toolchain: nightly-2025-12-19
       - name: Install alsa and udev
         run: sudo apt-get update; sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev libxkbcommon-x11-0 libwayland-dev
       - name: Run doc tests with all features (this also compiles README examples)
@@ -64,7 +64,7 @@ jobs:
           key: ubuntu-latest-cargo-lint-${{ hashFiles('**/Cargo.toml') }}
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: stable
+          toolchain: nightly-2025-12-19
           components: rustfmt, clippy
       - name: Install alsa and udev
         run: sudo apt-get update; sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev libxkbcommon-x11-0 libwayland-dev
