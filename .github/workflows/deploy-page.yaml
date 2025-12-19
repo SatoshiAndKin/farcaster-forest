@@ -1,6 +1,9 @@
 name: deploy-github-page
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:

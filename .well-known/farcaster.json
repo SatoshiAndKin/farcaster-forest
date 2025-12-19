@@ -1,0 +1,20 @@
+{
+    "miniapp": {
+        "version": "1",
+        "name": "Farcaster Forest",
+        "iconUrl": "https://SatoshiAndKin.github.io/farcaster-forest/assets/logo.png",
+        "homeUrl": "https://SatoshiAndKin.github.io/farcaster-forest/",
+        "imageUrl": "https://SatoshiAndKin.github.io/farcaster-forest/assets/opengraph-image.png",
+        "buttonTitle": "🏕️ Start",
+        "splashImageUrl": "https://SatoshiAndKin.github.io/farcaster-forest/assets/logo.png",
+        "splashBackgroundColor": "#014421",
+        "requiredChains": [
+            "eip155:8453"
+        ],
+        "requiredCapabilities": [
+            "actions.signIn",
+            "wallet.getEthereumProvider",
+            "actions.swapToken"
+        ]
+    }
+}
