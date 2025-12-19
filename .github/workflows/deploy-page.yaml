@@ -41,7 +41,7 @@ jobs:
 
       - name: Build Release
         run: |
-          trunk build --public-url "https://SatoshiAndKin.github.io/farcaster-forest/"
+          trunk build --release --public-url "https://SatoshiAndKin.github.io/farcaster-forest/"
 
       - name: optimize Wasm
         uses: NiklasEi/wasm-opt-action@v2
