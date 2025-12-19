@@ -30,8 +30,16 @@
 
     // TODO: we need to get a signer to create the xmtp Client. then we need to pass messages between the client and the rust code
 
-    // TODO: do this **after** your app is fully loaded and ready to display
-    await sdk.actions.ready()
+    const isMiniApp = await sdk.isInMiniApp()
+
+    if (isMiniApp) {
+        console.log("in a mini-app")
+
+        // TODO: do this **after** your app is fully loaded and ready to display
+        await sdk.actions.ready()
+    } else {
+        console.log("not in a mini-app")
+    }
 </script>
 
 </html>
