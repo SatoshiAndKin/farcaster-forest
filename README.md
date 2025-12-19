@@ -1,8 +1,10 @@
-# A Bevy game template
+# Farcaster Forest
 
-Template for a Game using the awesome [Bevy engine][bevy] featuring out of the box builds for Windows, Linux, macOS, Web (Wasm), Android, and iOS.
+A simple mini-app where you can enjoy a peaceful forest with song birds instead of doom scrolling.
 
-# What does this template give you?
+Based on this [Template][https://github.com/NiklasEi/bevy_game_template] for a Game using the awesome [Bevy engine][bevy] featuring out of the box builds for Windows, Linux, macOS, Web (Wasm), Android, and iOS.
+
+# What did template give us?
 
 * small example ["game"](https://niklasei.github.io/bevy_game_template/)
 * easy setup for running the web build using [trunk] (`trunk serve`) 

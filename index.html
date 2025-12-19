@@ -1,22 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-        <title>Bevy game</title> <!-- ToDo -->
-        <link data-trunk rel="copy-dir" href="assets"/>
-        <link data-trunk rel="copy-dir" href="credits"/>
-        <link data-trunk rel="copy-file" href="build/windows/icon.ico"/>
-        <link rel="icon" href="icon.ico">
-        <link data-trunk rel="inline" href="build/web/styles.css"/>
-    </head>
-    <body>
-        <link data-trunk rel="inline" href="build/web/sound.js"/>
-        <div class="game-container">
-            <div class="lds-dual-ring"></div>
-            <canvas id="bevy">
-                Javascript and support for canvas is required
-            </canvas>
-        </div>
-    </body>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Farcaster Forest</title>
+    <link data-trunk rel="copy-dir" href="assets" />
+    <link data-trunk rel="copy-dir" href="credits" />
+    <link data-trunk rel="copy-file" href="build/windows/icon.ico" />
+    <link rel="icon" href="icon.ico">
+    <link data-trunk rel="inline" href="build/web/styles.css" />
+
+</head>
+
+<body>
+    <link data-trunk rel="inline" href="build/web/sound.js" />
+    <div class="game-container">
+        <div class="lds-dual-ring"></div>
+        <canvas id="bevy">
+            Javascript and support for canvas is required
+        </canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@farcaster/miniapp-sdk/dist/index.min.js"></script>
+    <!-- TODO: we probably want to call ready after bevy has done some loading -->
+    <script>
+        miniapp.sdk.actions.ready();
+    </script>
+</body>
+
 </html>
