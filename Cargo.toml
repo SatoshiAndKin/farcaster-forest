@@ -44,10 +44,10 @@ dev = [
 # All of Bevy's default features exept for the audio related ones (bevy_audio, vorbis), since they clash with bevy_kira_audio
 #   and android_shared_stdcxx/android-game-activity, since those are covered in `mobile`
 [dependencies]
-bevy = { version = "0.17.3", default-features = false, features = [
+bevy = { version = "0.18", default-features = false, features = [
     "std",
     "async_executor",
-    "animation",
+    "gltf_animation",
     "bevy_asset",
     "bevy_color",
     "bevy_core_pipeline",
@@ -58,7 +58,7 @@ bevy = { version = "0.17.3", default-features = false, features = [
     "bevy_gltf",
     "bevy_input_focus",
     "bevy_log",
-    "bevy_mesh_picking_backend",
+    "mesh_picking",
     "bevy_pbr",
     "bevy_picking",
     "bevy_render",
@@ -69,12 +69,12 @@ bevy = { version = "0.17.3", default-features = false, features = [
     "bevy_light",
     "bevy_shader",
     "bevy_sprite",
-    "bevy_sprite_picking_backend",
+    "sprite_picking",
     "bevy_sprite_render",
     "bevy_state",
     "bevy_text",
     "bevy_ui",
-    "bevy_ui_picking_backend",
+    "ui_picking",
     "bevy_ui_render",
     "bevy_window",
     "bevy_winit",
@@ -94,8 +94,8 @@ bevy = { version = "0.17.3", default-features = false, features = [
     "debug",
     "zstd_rust",
 ] }
-bevy_kira_audio = { version = "0.24", features = ["android_shared_stdcxx", "mp3"] }
-bevy_asset_loader = { version = "0.24.0" }
+bevy_kira_audio = { version = "0.25", features = ["android_shared_stdcxx", "mp3"] }
+bevy_asset_loader = { version = "0.25.0" }
 rand = { version = "0.9.2", features = ["nightly", "simd_support"] }
 webbrowser = { version = "1", features = ["hardened"] }
 
@@ -106,7 +106,7 @@ image = { version = "0.25.9", default-features = false }
 log = { version = "0.4", features = ["max_level_debug", "release_max_level_warn"] }
 rng = "0.1.0"
 rand_chacha = "0.9.0"
-bevy_enhanced_input = "0.20.1"
+bevy_enhanced_input = "0.22.2"
 
 [build-dependencies]
 embed-resource = "3"
