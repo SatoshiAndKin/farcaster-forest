@@ -22,10 +22,9 @@ impl Plugin for LoadingPlugin {
 
 #[derive(AssetCollection, Resource)]
 pub struct AudioAssets {
-    #[asset(path = "audio/flying.ogg")]
-    pub flying: Handle<AudioSource>,
-    // TODO: convert mp3s to ogg
-    // TODO: load a whole directory without having to list every single file?
+    #[asset(path = "audio/city-night-evening-ambience.ogg")]
+    pub ambient: Handle<AudioSource>,
+    #[allow(dead_code)]
     #[asset(
         path = "audio/Voices of Western Backyard Birds updated 2/01 Western Backyard Birds.ogg"
     )]

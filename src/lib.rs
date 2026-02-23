@@ -1,33 +1,27 @@
 #![allow(clippy::type_complexity)]
 
-mod actions;
 mod audio;
+mod bird;
 mod loading;
 mod menu;
-mod player;
+mod scene;
 
-use crate::actions::ActionsPlugin;
 use crate::audio::InternalAudioPlugin;
+use crate::bird::BirdPlugin;
 use crate::loading::LoadingPlugin;
 use crate::menu::MenuPlugin;
-use crate::player::PlayerPlugin;
+use crate::scene::ScenePlugin;
 
 use bevy::app::App;
 #[cfg(debug_assertions)]
 use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
 use bevy::prelude::*;
 
-// This example game uses States to separate logic
-// See https://bevy-cheatbook.github.io/programming/states.html
-// Or https://github.com/bevyengine/bevy/blob/main/examples/ecs/state.rs
 #[derive(States, Default, Clone, Eq, PartialEq, Debug, Hash)]
 enum GameState {
-    // During the loading State the LoadingPlugin will load our assets
     #[default]
     Loading,
-    // During this State the actual game logic is executed
     Playing,
-    // Here the menu is drawn and waiting for player interaction
     Menu,
 }
 
@@ -38,9 +32,9 @@ impl Plugin for GamePlugin {
         app.init_state::<GameState>().add_plugins((
             LoadingPlugin,
             MenuPlugin,
-            ActionsPlugin,
             InternalAudioPlugin,
-            PlayerPlugin,
+            ScenePlugin,
+            BirdPlugin,
         ));
 
         #[cfg(debug_assertions)]
