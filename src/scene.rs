@@ -24,6 +24,7 @@ struct Sun;
 
 /// Full day cycle duration in seconds. 120s = 2 minute day.
 const DAY_DURATION: f32 = 120.0;
+const NOON_SHADOW_STRENGTH: f32 = 0.7;
 
 #[derive(Resource)]
 struct DayClock {
@@ -40,6 +41,16 @@ fn setup_scene(
     // Orthographic isometric camera (visual only)
     commands.spawn((
         Camera3d::default(),
+        DistanceFog {
+            color: Color::srgba(0.75, 0.83, 0.94, 1.0),
+            directional_light_exponent: 18.0,
+            directional_light_color: Color::srgba(1.0, 0.97, 0.92, 1.0),
+            falloff: FogFalloff::Linear {
+                start: 28.0,
+                end: 100.0,
+            },
+            ..default()
+        },
         Projection::from(OrthographicProjection {
             scaling_mode: ScalingMode::FixedVertical {
                 viewport_height: 18.0,
@@ -163,54 +174,57 @@ fn update_day_night_cycle(
 
     // Color temperature based on sun elevation
     let (sun_color, sun_lux, ambient_color, ambient_brightness) = if sun_y > 0.3 {
-        // High sun: bright white-yellow daylight
+        // High sun: near-neutral daylight, warmer as it approaches lower elevation
         let warmth = 1.0 - (sun_y - 0.3) / 0.7; // 0 at zenith, 1 near horizon
         let r = 1.0;
-        let g = 0.95 - warmth * 0.1;
-        let b = 0.85 - warmth * 0.2;
+        let g = 0.97 - warmth * 0.05;
+        let b = 0.93 - warmth * 0.1;
         (
             Color::srgb(r, g, b),
-            10000.0 * sun_y.min(1.0),
-            Color::srgb(0.85, 0.9, 1.0),
-            250.0,
+            40000.0 * sun_y.min(1.0),
+            Color::srgb(0.56, 0.64, 0.78),
+            85.0,
         )
     } else if sun_y > 0.0 {
-        // Low sun: warm sunrise/sunset orange
+        // Low sun: warm golden hour
         let frac = sun_y / 0.3;
         let r = 1.0;
-        let g = 0.5 + frac * 0.4;
-        let b = 0.2 + frac * 0.4;
+        let g = 0.62 + frac * 0.3;
+        let b = 0.38 + frac * 0.36;
         (
             Color::srgb(r, g, b),
-            2000.0 + frac * 8000.0,
-            Color::srgb(0.8, 0.6, 0.4),
-            100.0 + frac * 150.0,
+            1800.0 + frac * 10200.0,
+            Color::srgb(0.42 + frac * 0.12, 0.4 + frac * 0.18, 0.5 + frac * 0.2),
+            28.0 + frac * 58.0,
         )
     } else if sun_y > -0.05 {
-        // Twilight: deep orange fading to blue
+        // Twilight: rapidly cooling sky and very low direct light
         let frac = (sun_y + 0.05) / 0.05; // 1 at horizon, 0 at -0.05
-        let r = 0.8 * frac;
-        let g = 0.3 * frac;
-        let b = 0.1 * frac + 0.15 * (1.0 - frac);
+        let r = 0.95 * frac;
+        let g = 0.5 * frac;
+        let b = 0.25 * frac + 0.3 * (1.0 - frac);
         (
             Color::srgb(r, g, b),
-            500.0 * frac,
-            Color::srgb(0.15 + 0.5 * frac, 0.15 + 0.3 * frac, 0.3 + 0.2 * frac),
-            30.0 + 70.0 * frac,
+            400.0 * frac,
+            Color::srgb(0.15 + 0.35 * frac, 0.17 + 0.28 * frac, 0.3 + 0.22 * frac),
+            14.0 + 30.0 * frac,
         )
     } else {
-        // Night: moonlight (cool blue, very dim)
+        // Night: cool moonlight with low sky fill
         (
-            Color::srgb(0.4, 0.45, 0.6),
-            200.0,
-            Color::srgb(0.08, 0.08, 0.15),
-            20.0,
+            Color::srgb(0.52, 0.56, 0.67),
+            120.0,
+            Color::srgb(0.07, 0.08, 0.13),
+            12.0,
         )
     };
 
     if let Ok((mut light, mut transform)) = sun_query.single_mut() {
         light.color = sun_color;
         light.illuminance = sun_lux;
+        let noon = sun_y.clamp(0.0, 1.0);
+        light.shadow_depth_bias = 0.02 - (0.008 * noon * NOON_SHADOW_STRENGTH);
+        light.shadow_normal_bias = 2.0 - (0.8 * noon * NOON_SHADOW_STRENGTH);
 
         if is_day {
             // Sun shines down from its orbital position
