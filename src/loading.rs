@@ -119,6 +119,14 @@ pub struct AudioAssets {
         path = "audio/Voices of Western Backyard Birds updated 2/27 Evening Grosbeak Calls.ogg"
     )]
     pub evening_grosbeak_calls: Handle<AudioSource>,
+
+    // Nocturnal birds
+    #[asset(path = "audio/Great Horned Owl Call.ogg")]
+    pub great_horned_owl_call: Handle<AudioSource>,
+    #[asset(path = "audio/Barn Owl Call.ogg")]
+    pub barn_owl_call: Handle<AudioSource>,
+    #[asset(path = "audio/Western Screech-Owl Call.ogg")]
+    pub western_screech_owl_call: Handle<AudioSource>,
 }
 
 #[derive(AssetCollection, Resource)]

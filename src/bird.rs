@@ -5,7 +5,7 @@ use rand::Rng;
 
 use crate::GameState;
 use crate::loading::AudioAssets;
-use crate::scene::Tree;
+use crate::scene::{DayClock, Tree};
 
 pub struct BirdPlugin;
 
@@ -27,7 +27,13 @@ impl Plugin for BirdPlugin {
             )
             .add_systems(
                 Update,
-                (spawn_birds, bird_ai, despawn_distant_birds).run_if(in_state(GameState::Playing)),
+                (
+                    spawn_birds,
+                    bird_ai,
+                    send_inactive_birds_home,
+                    despawn_distant_birds,
+                )
+                    .run_if(in_state(GameState::Playing)),
             );
     }
 }
@@ -49,6 +55,7 @@ fn set_fixed_timestep_flag(mut flag: ResMut<DidFixedTimestepRunThisFrame>) {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum BirdSpecies {
+    // Diurnal
     MourningDove,
     DownyWoodpecker,
     NorthernFlicker,
@@ -63,9 +70,26 @@ pub enum BirdSpecies {
     PineSiskin,
     AmericanGoldfinch,
     EveningGrosbeak,
+    // Nocturnal
+    GreatHornedOwl,
+    BarnOwl,
+    WesternScreechOwl,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum ActivityPeriod {
+    /// Active from sunrise through sunset, peak at dawn/dusk. Most songbirds.
+    Diurnal,
+    /// Strictly daytime -- needs good light. Woodpeckers, visual foragers.
+    StrictlyDiurnal,
+    /// Dawn and dusk specialists, quiet midday. Some sparrows, finches.
+    Crepuscular,
+    /// Active from dusk through dawn. Owls.
+    Nocturnal,
 }
 
 impl BirdSpecies {
+    // TODO: i think strum has a helper for this
     const ALL: &[BirdSpecies] = &[
         BirdSpecies::MourningDove,
         BirdSpecies::DownyWoodpecker,
@@ -81,6 +105,9 @@ impl BirdSpecies {
         BirdSpecies::PineSiskin,
         BirdSpecies::AmericanGoldfinch,
         BirdSpecies::EveningGrosbeak,
+        BirdSpecies::GreatHornedOwl,
+        BirdSpecies::BarnOwl,
+        BirdSpecies::WesternScreechOwl,
     ];
 
     fn color(&self) -> Color {
@@ -99,6 +126,9 @@ impl BirdSpecies {
             Self::PineSiskin => Color::srgb(0.6, 0.6, 0.3),
             Self::AmericanGoldfinch => Color::srgb(0.9, 0.8, 0.1),
             Self::EveningGrosbeak => Color::srgb(0.7, 0.6, 0.1),
+            Self::GreatHornedOwl => Color::srgb(0.45, 0.35, 0.25),
+            Self::BarnOwl => Color::srgb(0.85, 0.8, 0.7),
+            Self::WesternScreechOwl => Color::srgb(0.5, 0.45, 0.4),
         }
     }
 
@@ -118,6 +148,9 @@ impl BirdSpecies {
             Self::PineSiskin => 0.14,
             Self::AmericanGoldfinch => 0.14,
             Self::EveningGrosbeak => 0.20,
+            Self::GreatHornedOwl => 0.35,
+            Self::BarnOwl => 0.28,
+            Self::WesternScreechOwl => 0.20,
         }
     }
 
@@ -138,6 +171,47 @@ impl BirdSpecies {
             Self::PineSiskin => 0.9,
             Self::AmericanGoldfinch => 1.0,
             Self::EveningGrosbeak => 1.2,
+            Self::GreatHornedOwl => 1.0,
+            Self::BarnOwl => 1.3,
+            Self::WesternScreechOwl => 0.8,
+        }
+    }
+
+    fn activity(&self) -> ActivityPeriod {
+        match self {
+            // Woodpeckers need daylight for visual foraging and drumming
+            Self::DownyWoodpecker | Self::NorthernFlicker => ActivityPeriod::StrictlyDiurnal,
+            // Dawn/dusk chorus singers
+            Self::WhiteCrownedSparrow | Self::MourningDove => ActivityPeriod::Crepuscular,
+            // Owls
+            Self::GreatHornedOwl | Self::BarnOwl | Self::WesternScreechOwl => {
+                ActivityPeriod::Nocturnal
+            }
+            // Most songbirds are active throughout the day
+            _ => ActivityPeriod::Diurnal,
+        }
+    }
+
+    /// Returns true if this species would be active at the given sun elevation.
+    /// sun_elevation: positive = daytime, negative = nighttime
+    fn is_active(&self, sun_elevation: f32) -> bool {
+        match self.activity() {
+            ActivityPeriod::Diurnal => {
+                // Active when sun is above horizon (with a little twilight grace)
+                sun_elevation > -0.02
+            }
+            ActivityPeriod::StrictlyDiurnal => {
+                // Need good light -- sun well above horizon
+                sun_elevation > 0.15
+            }
+            ActivityPeriod::Crepuscular => {
+                // Active during day, but especially dawn/dusk
+                sun_elevation > -0.04
+            }
+            ActivityPeriod::Nocturnal => {
+                // Active from dusk through dawn -- when sun is below horizon or near it
+                sun_elevation < 0.1
+            }
         }
     }
 
@@ -190,6 +264,9 @@ impl BirdSpecies {
             Self::PineSiskin => vec![audio_assets.pine_siskin_song_calls.clone()],
             Self::AmericanGoldfinch => vec![audio_assets.american_goldfinch_song_call.clone()],
             Self::EveningGrosbeak => vec![audio_assets.evening_grosbeak_calls.clone()],
+            Self::GreatHornedOwl => vec![audio_assets.great_horned_owl_call.clone()],
+            Self::BarnOwl => vec![audio_assets.barn_owl_call.clone()],
+            Self::WesternScreechOwl => vec![audio_assets.western_screech_owl_call.clone()],
         }
     }
 }
@@ -242,7 +319,7 @@ impl Default for BirdSpawnTimer {
     }
 }
 
-const MAX_BIRDS: usize = 5;
+const MAX_BIRDS: usize = 8;
 
 #[allow(clippy::too_many_arguments)]
 fn spawn_birds(
@@ -250,6 +327,7 @@ fn spawn_birds(
     time: Res<Time>,
     mut spawn_timer: ResMut<BirdSpawnTimer>,
     audio_assets: Res<AudioAssets>,
+    day_clock: Res<DayClock>,
     birds: Query<&Bird>,
     trees: Query<&Transform, With<Tree>>,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -260,9 +338,10 @@ fn spawn_birds(
         return;
     }
 
+    let sun_elev = day_clock.sun_elevation();
+
     let bird_count = birds.iter().count();
     if bird_count >= MAX_BIRDS {
-        // Reset timer and wait
         let mut rng = rand::rng();
         spawn_timer.timer = Timer::from_seconds(rng.random_range(5.0..10.0), TimerMode::Once);
         return;
@@ -274,7 +353,19 @@ fn spawn_birds(
     }
 
     let mut rng = rand::rng();
-    let species = BirdSpecies::ALL[rng.random_range(0..BirdSpecies::ALL.len())];
+
+    // Filter to species active at current time of day
+    let active_species: Vec<BirdSpecies> = BirdSpecies::ALL
+        .iter()
+        .copied()
+        .filter(|s| s.is_active(sun_elev))
+        .collect();
+    if active_species.is_empty() {
+        spawn_timer.timer = Timer::from_seconds(rng.random_range(3.0..6.0), TimerMode::Once);
+        return;
+    }
+
+    let species = active_species[rng.random_range(0..active_species.len())];
     let call_handles = species.call_handles(&audio_assets);
 
     // Pick a target tree
@@ -480,6 +571,43 @@ fn interpolate_bird_transforms(
     let alpha = fixed_time.overstep_fraction();
     for (mut transform, current, previous) in query.iter_mut() {
         transform.translation = previous.0.lerp(current.0, alpha);
+    }
+}
+
+// -- Time-of-day departure --
+
+fn send_inactive_birds_home(
+    day_clock: Res<DayClock>,
+    mut birds: Query<(&Bird, &mut BirdState, &mut SpatialAudioEmitter)>,
+    mut audio_instances: ResMut<Assets<AudioInstance>>,
+) {
+    let sun_elev = day_clock.sun_elevation();
+
+    for (bird, mut state, mut emitter) in birds.iter_mut() {
+        // Skip birds already departing
+        if matches!(*state, BirdState::Departing { .. }) {
+            continue;
+        }
+
+        if !bird.species.is_active(sun_elev) {
+            // Stop any active calls
+            for handle in emitter.instances.iter() {
+                if let Some(instance) = audio_instances.get_mut(handle) {
+                    instance.stop(AudioTween::default());
+                }
+            }
+            emitter.instances.clear();
+
+            let mut rng = rand::rng();
+            let angle: f32 = rng.random_range(0.0..std::f32::consts::TAU);
+            *state = BirdState::Departing {
+                target: Vec3::new(
+                    angle.cos() * 30.0,
+                    rng.random_range(3.0..8.0),
+                    angle.sin() * 30.0,
+                ),
+            };
+        }
     }
 }
 

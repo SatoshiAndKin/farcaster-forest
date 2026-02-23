@@ -27,8 +27,20 @@ const DAY_DURATION: f32 = 120.0;
 const NOON_SHADOW_STRENGTH: f32 = 0.7;
 
 #[derive(Resource)]
-struct DayClock {
-    elapsed: f32,
+pub struct DayClock {
+    pub elapsed: f32,
+}
+
+impl DayClock {
+    /// Returns normalized day progress 0..1 where 0=sunrise, 0.25=noon, 0.5=sunset, 0.5..1=night.
+    pub fn progress(&self) -> f32 {
+        (self.elapsed % DAY_DURATION) / DAY_DURATION
+    }
+
+    /// Sun elevation: positive during day, negative at night.
+    pub fn sun_elevation(&self) -> f32 {
+        (self.progress() * std::f32::consts::TAU).sin()
+    }
 }
 
 fn setup_scene(
