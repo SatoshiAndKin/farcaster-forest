@@ -48,8 +48,7 @@ fn setup_scene(
             falloff: FogFalloff::Linear {
                 start: 28.0,
                 end: 100.0,
-            },
-            ..default()
+            }
         },
         Projection::from(OrthographicProjection {
             scaling_mode: ScalingMode::FixedVertical {

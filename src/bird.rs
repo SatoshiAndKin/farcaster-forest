@@ -244,6 +244,7 @@ impl Default for BirdSpawnTimer {
 
 const MAX_BIRDS: usize = 5;
 
+#[allow(clippy::too_many_arguments)]
 fn spawn_birds(
     mut commands: Commands,
     time: Res<Time>,
