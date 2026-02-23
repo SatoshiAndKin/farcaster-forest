@@ -1,6 +1,6 @@
 use bevy::prelude::*;
-use bevy_kira_audio::prelude::*;
 use bevy_kira_audio::SpatialRadius;
+use bevy_kira_audio::prelude::*;
 use rand::Rng;
 
 use crate::GameState;
@@ -27,8 +27,7 @@ impl Plugin for BirdPlugin {
             )
             .add_systems(
                 Update,
-                (spawn_birds, bird_ai, despawn_distant_birds)
-                    .run_if(in_state(GameState::Playing)),
+                (spawn_birds, bird_ai, despawn_distant_birds).run_if(in_state(GameState::Playing)),
             );
     }
 }
@@ -142,7 +141,10 @@ impl BirdSpecies {
         }
     }
 
-    fn call_handles(&self, audio_assets: &AudioAssets) -> Vec<Handle<bevy_kira_audio::AudioSource>> {
+    fn call_handles(
+        &self,
+        audio_assets: &AudioAssets,
+    ) -> Vec<Handle<bevy_kira_audio::AudioSource>> {
         match self {
             Self::MourningDove => vec![audio_assets.mourning_dove_song.clone()],
             Self::DownyWoodpecker => vec![
@@ -304,7 +306,9 @@ fn spawn_birds(
             trees_visited: 0,
             max_trees,
         },
-        BirdState::Approaching { target: target_tree },
+        BirdState::Approaching {
+            target: target_tree,
+        },
         PhysicalTranslation(spawn_pos),
         PreviousPhysicalTranslation(spawn_pos),
         Velocity::default(),
@@ -417,8 +421,7 @@ fn bird_ai(
                         };
                     } else {
                         // Fly to next tree
-                        let next_tree =
-                            tree_positions[rng.random_range(0..tree_positions.len())];
+                        let next_tree = tree_positions[rng.random_range(0..tree_positions.len())];
                         *state = BirdState::FlyingToNext { target: next_tree };
                     }
                 }
@@ -447,11 +450,14 @@ fn bird_ai(
 
 fn advance_bird_physics(
     fixed_time: Res<Time<Fixed>>,
-    mut query: Query<(
-        &mut PhysicalTranslation,
-        &mut PreviousPhysicalTranslation,
-        &Velocity,
-    ), With<Bird>>,
+    mut query: Query<
+        (
+            &mut PhysicalTranslation,
+            &mut PreviousPhysicalTranslation,
+            &Velocity,
+        ),
+        With<Bird>,
+    >,
 ) {
     for (mut current, mut previous, velocity) in query.iter_mut() {
         previous.0 = current.0;
@@ -461,11 +467,14 @@ fn advance_bird_physics(
 
 fn interpolate_bird_transforms(
     fixed_time: Res<Time<Fixed>>,
-    mut query: Query<(
-        &mut Transform,
-        &PhysicalTranslation,
-        &PreviousPhysicalTranslation,
-    ), With<Bird>>,
+    mut query: Query<
+        (
+            &mut Transform,
+            &PhysicalTranslation,
+            &PreviousPhysicalTranslation,
+        ),
+        With<Bird>,
+    >,
 ) {
     let alpha = fixed_time.overstep_fraction();
     for (mut transform, current, previous) in query.iter_mut() {
