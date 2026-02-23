@@ -25,8 +25,8 @@ body {
 }
 
 .game-container {
-    width: 800px;
-    height: 600px;
+    width: 100vw;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -67,7 +67,7 @@ body {
 }
 </style>
 
-<link rel="modulepreload" href="https://satoshiandkin.github.io/farcaster-forest/bevy_game-ef612d5f9e6aadad.js" crossorigin="anonymous" integrity="sha384-T/XFZALHWCNkjuWpfIrPwTSsnvXBQu5iMj/RULkZHKYq9dHbVYTbdt8NHmSl8Rf+"><link rel="preload" href="https://satoshiandkin.github.io/farcaster-forest/bevy_game-ef612d5f9e6aadad_bg.wasm" crossorigin="anonymous" integrity="sha384-QKkKXT0meS8xmptVTx8wCFNFWXLPn1YtCB0CiRQZVFN1aukLX2CPFDOjGc2sTqaX" as="fetch" type="application/wasm"></head>
+<link rel="modulepreload" href="https://satoshiandkin.github.io/farcaster-forest/bevy_game-31119169c469d97a.js" crossorigin="anonymous" integrity="sha384-T/XFZALHWCNkjuWpfIrPwTSsnvXBQu5iMj/RULkZHKYq9dHbVYTbdt8NHmSl8Rf+"><link rel="preload" href="https://satoshiandkin.github.io/farcaster-forest/bevy_game-31119169c469d97a_bg.wasm" crossorigin="anonymous" integrity="sha384-G3mlQzmJWfXaRzeEJTvx85QmHW9VOkneORiv4bVLkgzOpyV8L3H43lg4IqTDSSer" as="fetch" type="application/wasm"></head>
 
 <body>
     <script>// Insert hack to make sound autoplay on Chrome as soon as the user interacts with the tab:
@@ -157,8 +157,8 @@ body {
     </script>
 
 <script type="module">
-import init, * as bindings from 'https://satoshiandkin.github.io/farcaster-forest/bevy_game-ef612d5f9e6aadad.js';
-const wasm = await init({ module_or_path: 'https://satoshiandkin.github.io/farcaster-forest/bevy_game-ef612d5f9e6aadad_bg.wasm' });
+import init, * as bindings from 'https://satoshiandkin.github.io/farcaster-forest/bevy_game-31119169c469d97a.js';
+const wasm = await init({ module_or_path: 'https://satoshiandkin.github.io/farcaster-forest/bevy_game-31119169c469d97a_bg.wasm' });
 
 
 window.wasmBindings = bindings;
