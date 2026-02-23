@@ -315,7 +315,7 @@ fn spawn_birds(
         Velocity::default(),
         BirdCallHandles(call_handles),
         SpatialAudioEmitter { instances: vec![] },
-        SpatialRadius { radius: 30.0 },
+        SpatialRadius { radius: 60.0 },
     ));
 
     // Reset spawn timer with random interval
@@ -381,7 +381,7 @@ fn bird_ai(
                     let call_idx = rng.random_range(0..call_handles.0.len());
                     let handle = audio
                         .play(call_handles.0[call_idx].clone())
-                        .with_volume(3.0)
+                        .with_volume(1.0)
                         .handle();
                     emitter.instances.push(handle.clone());
                     commands.entity(entity).insert(ActiveCall(handle));

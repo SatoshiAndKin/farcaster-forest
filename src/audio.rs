@@ -16,5 +16,5 @@ fn start_ambient(audio_assets: Res<AudioAssets>, audio: Res<Audio>) {
     audio
         .play(audio_assets.ambient.clone())
         .looped()
-        .with_volume(0.05);
+        .with_volume(0.015);
 }
