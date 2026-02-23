@@ -67,20 +67,16 @@ body {
 }
 </style>
 
-<link rel="modulepreload" href="https://satoshiandkin.github.io/farcaster-forest/bevy_game-31119169c469d97a.js" crossorigin="anonymous" integrity="sha384-T/XFZALHWCNkjuWpfIrPwTSsnvXBQu5iMj/RULkZHKYq9dHbVYTbdt8NHmSl8Rf+"><link rel="preload" href="https://satoshiandkin.github.io/farcaster-forest/bevy_game-31119169c469d97a_bg.wasm" crossorigin="anonymous" integrity="sha384-G3mlQzmJWfXaRzeEJTvx85QmHW9VOkneORiv4bVLkgzOpyV8L3H43lg4IqTDSSer" as="fetch" type="application/wasm"></head>
+<link rel="modulepreload" href="https://satoshiandkin.github.io/farcaster-forest/bevy_game-18561a96e0e97de2.js" crossorigin="anonymous" integrity="sha384-VEsEIZAWxjFjSEq3i75pb6Eqq1/mZRK8T8jEkqsWkNxh3EIjZt/UnRhc6BxI+KWm"><link rel="preload" href="https://satoshiandkin.github.io/farcaster-forest/bevy_game-18561a96e0e97de2_bg.wasm" crossorigin="anonymous" integrity="sha384-ZNgLE1hE9jzHEjHqzAlY2IivgRgEIMQQcruGw/oslZlsaK9W+UCJ2Y0rufuFo3iu" as="fetch" type="application/wasm"></head>
 
 <body>
-    <script>// Insert hack to make sound autoplay on Chrome as soon as the user interacts with the tab:
+    <script>// Hack to resume AudioContexts on first user interaction.
 // https://developers.google.com/web/updates/2018/11/web-audio-autoplay#moving-forward
-
-// the following function keeps track of all AudioContexts and resumes them on the first user
-// interaction with the page. If the function is called and all contexts are already running,
-// it will remove itself from all event listeners.
+// Uses capture phase so events fire before Bevy's canvas handlers can stop propagation.
+// Includes touchstart for iOS Safari reliability.
 (function () {
-    // An array of all contexts to resume on the page
     const audioContextList = [];
 
-    // An array of various user interaction events we should listen for
     const userInputEventNames = [
         "click",
         "contextmenu",
@@ -88,23 +84,30 @@ body {
         "dblclick",
         "mousedown",
         "mouseup",
+        "pointerdown",
         "pointerup",
+        "touchstart",
         "touchend",
         "keydown",
         "keyup",
     ];
 
-    // A proxy object to intercept AudioContexts and
-    // add them to the array for tracking and resuming later
-    self.AudioContext = new Proxy(self.AudioContext, {
-        construct(target, args) {
-            const result = new target(...args);
-            audioContextList.push(result);
-            return result;
-        },
-    });
+    function proxyContext(original) {
+        if (!original) return;
+        return new Proxy(original, {
+            construct(target, args) {
+                const result = new target(...args);
+                audioContextList.push(result);
+                return result;
+            },
+        });
+    }
 
-    // To resume all AudioContexts being tracked
+    self.AudioContext = proxyContext(self.AudioContext);
+    if (self.webkitAudioContext) {
+        self.webkitAudioContext = proxyContext(self.webkitAudioContext);
+    }
+
     function resumeAllContexts(_event) {
         let count = 0;
 
@@ -116,20 +119,15 @@ body {
             }
         });
 
-        // If all the AudioContexts have now resumed then we unbind all
-        // the event listeners from the page to prevent unnecessary resume attempts
-        // Checking count > 0 ensures that the user interaction happens AFTER the game started up
         if (count > 0 && count === audioContextList.length) {
             userInputEventNames.forEach((eventName) => {
-                document.removeEventListener(eventName, resumeAllContexts);
+                document.removeEventListener(eventName, resumeAllContexts, true);
             });
         }
     }
 
-    // We bind the resume function for each user interaction
-    // event on the page
     userInputEventNames.forEach((eventName) => {
-        document.addEventListener(eventName, resumeAllContexts);
+        document.addEventListener(eventName, resumeAllContexts, true);
     });
 })();
 </script>
@@ -157,8 +155,8 @@ body {
     </script>
 
 <script type="module">
-import init, * as bindings from 'https://satoshiandkin.github.io/farcaster-forest/bevy_game-31119169c469d97a.js';
-const wasm = await init({ module_or_path: 'https://satoshiandkin.github.io/farcaster-forest/bevy_game-31119169c469d97a_bg.wasm' });
+import init, * as bindings from 'https://satoshiandkin.github.io/farcaster-forest/bevy_game-18561a96e0e97de2.js';
+const wasm = await init({ module_or_path: 'https://satoshiandkin.github.io/farcaster-forest/bevy_game-18561a96e0e97de2_bg.wasm' });
 
 
 window.wasmBindings = bindings;
