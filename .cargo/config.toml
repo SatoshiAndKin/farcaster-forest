@@ -1,2 +1,5 @@
 [build]
 rustflags = ["-Z", "threads=10"]
+
+[target.wasm32-unknown-unknown]
+rustflags = ["--cfg", "getrandom_backend=\"wasm_js\""]
