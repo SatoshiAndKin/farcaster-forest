@@ -106,7 +106,7 @@ image = { version = "0.25.9", default-features = false }
 ## This greatly improves WGPU's performance due to its heavy use of trace! calls
 log = { version = "0.4", features = ["max_level_debug", "release_max_level_warn"] }
 rng = "0.1.0"
-rand_chacha = "0.9.0"
+rand_chacha = "0.10.0"
 
 
 [build-dependencies]
