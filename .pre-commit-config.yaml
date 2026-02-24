@@ -1,0 +1,40 @@
+repos:
+  - repo: https://github.com/doublify/pre-commit-rust
+    rev: v1.0
+    hooks:
+      - id: fmt
+        name: cargo fmt
+        description: Format Rust code with rustfmt
+        args: ['--all', '--']
+      
+      - id: clippy
+        name: cargo clippy
+        description: Lint Rust code with clippy
+        args: ['--workspace', '--all-targets', '--all-features', '--', '-D', 'warnings']
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-yaml
+        name: Check YAML syntax
+        
+      - id: check-toml
+        name: Check TOML syntax
+        
+      - id: check-merge-conflict
+        name: Check for merge conflict markers
+        
+      - id: end-of-file-fixer
+        name: Fix end of files
+        exclude: '\.lock$'
+        
+      - id: trailing-whitespace
+        name: Trim trailing whitespace
+        exclude: '\.lock$'
+        
+      - id: check-added-large-files
+        name: Check for large files
+        args: ['--maxkb=1000']
+        
+      - id: detect-private-key
+        name: Detect private keys

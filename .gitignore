@@ -3,3 +3,29 @@ target/
 .DS_Store
 
 dist/
+
+# Environment files (secrets)
+.env
+.env.local
+.env.*.local
+
+# But keep templates
+!.env.example
+!.env.template
+
+# Test coverage reports
+coverage/
+*.profraw
+*.profdata
+
+# Editor files
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# OS files
+Thumbs.db

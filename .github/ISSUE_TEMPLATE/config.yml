@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Question or Discussion
+    url: https://github.com/SatoshiAndKin/farcaster-forest/discussions
+    about: For questions, ideas, or general discussion, please use GitHub Discussions
+  - name: Bevy Community
+    url: https://discord.gg/bevy
+    about: For general Bevy engine help, visit the Bevy Discord server

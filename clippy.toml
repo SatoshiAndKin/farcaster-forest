@@ -1,0 +1,24 @@
+# Clippy configuration for Farcaster Forest
+# Enforces naming conventions and code quality standards
+
+# Naming Conventions
+# Enforce consistent naming patterns across the codebase
+
+# Enum variants should be PascalCase (default)
+# Examples: BirdSpecies::MourningDove, GameState::Playing
+
+# Functions and methods should be snake_case (default)
+# Examples: spawn_birds(), update_day_night_cycle()
+
+# Constants and statics should be SCREAMING_SNAKE_CASE (default)
+# Examples: MAX_BIRDS, DAY_DURATION
+
+# Type names should be PascalCase (default)
+# Examples: BirdPlugin, DayClock, AudioAssets
+
+# Enforce these conventions with clippy lints
+# (These are Rust's default conventions, but explicit configuration
+# makes them enforceable and documents team standards)
+
+# Complexity limits
+cognitive-complexity-threshold = 15

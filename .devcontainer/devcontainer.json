@@ -1,0 +1,44 @@
+{
+  "name": "Farcaster Forest - Rust Game Dev",
+  "image": "mcr.microsoft.com/devcontainers/rust:1-bookworm",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rust-lang.rust-analyzer",
+        "tamasfe.even-better-toml",
+        "serayuzgur.crates",
+        "vadimcn.vscode-lldb",
+        "ms-vscode.hexeditor",
+        "usernamehw.errorlens"
+      ],
+      "settings": {
+        "rust-analyzer.checkOnSave.command": "clippy",
+        "rust-analyzer.cargo.features": "all",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "rust-lang.rust-analyzer"
+      }
+    }
+  },
+
+  "postCreateCommand": "rustup component add rustfmt clippy rust-analyzer && rustup target add wasm32-unknown-unknown",
+
+  "forwardPorts": [8080],
+
+  "remoteUser": "vscode",
+
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,readonly,type=bind,consistency=cached"
+  ],
+
+  "containerEnv": {
+    "RUST_BACKTRACE": "1"
+  }
+}

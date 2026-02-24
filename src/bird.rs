@@ -636,3 +636,159 @@ fn despawn_distant_birds(
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_all_bird_species_count() {
+        // Ensure ALL species list is complete
+        assert_eq!(BirdSpecies::ALL.len(), 17, "Expected 17 bird species");
+    }
+
+    #[test]
+    fn test_bird_species_variants_unique() {
+        // Verify all species variants are different by counting
+        // (can't use HashSet since BirdSpecies doesn't derive Hash)
+        let count = BirdSpecies::ALL.len();
+        assert!(count > 0, "Should have at least one bird species");
+
+        // Check for duplicates by comparing each pair
+        for i in 0..count {
+            for j in (i + 1)..count {
+                assert_ne!(
+                    BirdSpecies::ALL[i],
+                    BirdSpecies::ALL[j],
+                    "Found duplicate species in ALL array"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn test_bird_species_has_color() {
+        // Verify each species has a color configured
+        for species in BirdSpecies::ALL {
+            let color = species.color();
+            // Colors should have valid RGB components
+            let linear = color.to_linear();
+            assert!(
+                linear.red >= 0.0 && linear.red <= 1.0,
+                "Species has invalid red component"
+            );
+            assert!(
+                linear.green >= 0.0 && linear.green <= 1.0,
+                "Species has invalid green component"
+            );
+            assert!(
+                linear.blue >= 0.0 && linear.blue <= 1.0,
+                "Species has invalid blue component"
+            );
+        }
+    }
+
+    #[test]
+    fn test_bird_species_has_radius() {
+        // Verify each species has a reasonable radius
+        for species in BirdSpecies::ALL {
+            let radius = species.radius();
+            assert!(
+                radius > 0.0 && radius < 1.0,
+                "Bird radius should be between 0 and 1"
+            );
+        }
+    }
+
+    #[test]
+    fn test_bird_species_has_speed() {
+        // Verify each species has a reasonable flight speed
+        for species in BirdSpecies::ALL {
+            let speed = species.speed();
+            assert!(
+                speed > 0.0 && speed < 10.0,
+                "Bird speed should be reasonable"
+            );
+        }
+    }
+
+    #[test]
+    fn test_bird_spawn_timer_default() {
+        let timer = BirdSpawnTimer::default();
+        assert!(
+            timer.timer.duration().as_secs() > 0,
+            "Timer should have positive duration"
+        );
+        assert_eq!(
+            timer.timer.duration().as_secs(),
+            3,
+            "Default timer should be 3 seconds"
+        );
+    }
+
+    #[test]
+    fn test_activity_period_variants_exist() {
+        // Verify all activity period variants can be constructed
+        let _diurnal = ActivityPeriod::Diurnal;
+        let _strictly_diurnal = ActivityPeriod::StrictlyDiurnal;
+        let _crepuscular = ActivityPeriod::Crepuscular;
+        let _nocturnal = ActivityPeriod::Nocturnal;
+    }
+
+    #[test]
+    fn test_bird_activity_returns_valid_period() {
+        // Verify each species returns a valid activity period
+        for species in BirdSpecies::ALL {
+            let period = species.activity();
+            match period {
+                ActivityPeriod::Diurnal
+                | ActivityPeriod::StrictlyDiurnal
+                | ActivityPeriod::Crepuscular
+                | ActivityPeriod::Nocturnal => {}
+            }
+        }
+    }
+
+    #[test]
+    fn test_nocturnal_birds_exist() {
+        // Verify we have at least some nocturnal birds
+        let nocturnal_count = BirdSpecies::ALL
+            .iter()
+            .filter(|s| matches!(s.activity(), ActivityPeriod::Nocturnal))
+            .count();
+        assert!(
+            nocturnal_count >= 3,
+            "Should have at least 3 nocturnal species (owls)"
+        );
+    }
+
+    #[test]
+    fn test_diurnal_birds_exist() {
+        // Verify we have at least some diurnal birds
+        let diurnal_count = BirdSpecies::ALL
+            .iter()
+            .filter(|s| !matches!(s.activity(), ActivityPeriod::Nocturnal))
+            .count();
+        assert!(
+            diurnal_count > 0,
+            "Should have at least one diurnal species"
+        );
+    }
+
+    #[test]
+    fn test_bird_is_active_logic() {
+        // Test that nocturnal birds are active at night
+        let nocturnal = BirdSpecies::GreatHornedOwl;
+        assert!(
+            nocturnal.is_active(-0.5),
+            "Nocturnal bird should be active at night"
+        );
+
+        // Test that diurnal birds are active during day
+        let diurnal = BirdSpecies::MourningDove;
+        assert!(
+            diurnal.is_active(0.5),
+            "Diurnal bird should be active during day"
+        );
+    }
+}

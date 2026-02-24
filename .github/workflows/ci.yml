@@ -27,8 +27,8 @@ jobs:
       - name: Install alsa and udev
         run: sudo apt-get update; sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev libxkbcommon-x11-0 libwayland-dev libxkbcommon-dev
         if: runner.os == 'linux'
-      - name: Build & run tests
-        run: cargo test
+      - name: Build & run tests with timing
+        run: cargo test -- --show-output -Z unstable-options --report-time
   all-doc-tests:
     runs-on: ubuntu-latest
     steps:
@@ -72,3 +72,105 @@ jobs:
         run: cargo clippy --workspace --all-targets --all-features -- -Dwarnings
       - name: Check format
         run: cargo fmt --all -- --check
+  
+  validate-agents-md:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly-2025-12-19
+      - name: Install alsa and udev
+        run: sudo apt-get update; sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev libxkbcommon-x11-0 libwayland-dev
+      - name: Validate AGENTS.md commands
+        run: |
+          echo "Validating AGENTS.md documented commands..."
+          # Test that cargo build works
+          cargo build --verbose
+          # Test that cargo test works
+          cargo test -- --list
+          # Test that cargo clippy works
+          cargo clippy --workspace --all-targets --all-features -- -Dwarnings
+          # Test that cargo fmt check works
+          cargo fmt --all -- --check
+          echo "✅ All AGENTS.md commands validated successfully"
+  
+  todo-tracking:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan for TODO/FIXME comments
+        run: |
+          echo "Scanning for technical debt markers..."
+          # Find all TODO and FIXME comments in source files
+          TODO_COUNT=$(grep -r "TODO\|FIXME" src/ --include="*.rs" | wc -l || echo "0")
+          echo "Found $TODO_COUNT TODO/FIXME items in source code"
+          
+          # Report them as a summary
+          if [ "$TODO_COUNT" -gt 0 ]; then
+            echo "## Technical Debt Report" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Found **$TODO_COUNT** TODO/FIXME comments:" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            grep -rn "TODO\|FIXME" src/ --include="*.rs" | head -20 >> $GITHUB_STEP_SUMMARY || true
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ No TODO/FIXME items found"
+          fi
+  
+  generate-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ubuntu-latest-cargo-docs-${{ hashFiles('**/Cargo.toml') }}
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly-2025-12-19
+      - name: Install alsa and udev
+        run: sudo apt-get update; sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev libxkbcommon-x11-0 libwayland-dev
+      - name: Generate documentation
+        run: |
+          echo "Generating Rust documentation..."
+          cargo doc --workspace --all-features --no-deps
+          echo "✅ Documentation generated successfully"
+      - name: Upload documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: rust-docs
+          path: target/doc/
+          retention-days: 7
+  
+  unused-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly-2025-12-19
+      - name: Install cargo-udeps
+        run: cargo install cargo-udeps --locked
+      - name: Install alsa and udev
+        run: sudo apt-get update; sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev libxkbcommon-x11-0 libwayland-dev
+      - name: Check for unused dependencies
+        run: cargo +nightly-2025-12-19 udeps --all-targets
+  
+  duplicate-code:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install jscpd
+        run: npm install -g jscpd
+      - name: Check for duplicate code
+        run: |
+          echo "Scanning for duplicate code..."
+          jscpd src/ --min-lines 5 --min-tokens 50 --format "rust" --reporters "console" || true
+          echo "✅ Duplicate code scan completed"

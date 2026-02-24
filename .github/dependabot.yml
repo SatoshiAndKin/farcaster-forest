@@ -1,0 +1,65 @@
+version: 2
+updates:
+  # Enable Cargo dependency updates
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "rust"
+    reviewers:
+      - "SatoshiAndKin"
+    groups:
+      # Group Bevy ecosystem updates together
+      bevy:
+        patterns:
+          - "bevy*"
+        update-types:
+          - "minor"
+          - "patch"
+      # Group development dependencies
+      dev-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Mobile workspace
+  - package-ecosystem: "cargo"
+    directory: "/mobile"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "mobile"
+    reviewers:
+      - "SatoshiAndKin"
+
+  # GitHub Actions updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(ci)"
+    labels:
+      - "dependencies"
+      - "ci"
+    reviewers:
+      - "SatoshiAndKin"

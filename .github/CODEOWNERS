@@ -1,0 +1,33 @@
+# CODEOWNERS file
+# Each line is a file pattern followed by one or more owners.
+# Owners will be automatically requested for review when someone opens a PR.
+
+# Default owner for everything in the repo
+*                           @SatoshiAndKin
+
+# Core game source code
+/src/**                     @SatoshiAndKin
+
+# Build configuration
+/Cargo.toml                 @SatoshiAndKin
+/Cargo.lock                 @SatoshiAndKin
+/build.rs                   @SatoshiAndKin
+
+# CI/CD workflows
+/.github/workflows/**       @SatoshiAndKin
+
+# Mobile builds
+/mobile/**                  @SatoshiAndKin
+
+# Documentation
+/README.md                  @SatoshiAndKin
+/AGENTS.md                  @SatoshiAndKin
+/DESIGN.md                  @SatoshiAndKin
+
+# Assets and credits
+/assets/**                  @SatoshiAndKin
+/credits/**                 @SatoshiAndKin
+
+# Development environment
+/flake.nix                  @SatoshiAndKin
+/nix/**                     @SatoshiAndKin

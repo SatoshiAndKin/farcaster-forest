@@ -1,0 +1,106 @@
+graph TB
+    subgraph "Farcaster Forest - Game Architecture"
+        Main[Main Entry Point<br/>main.rs]
+        GamePlugin[Game Plugin<br/>lib.rs]
+        
+        Main --> GamePlugin
+        
+        subgraph "Core Systems"
+            Loading[Loading System<br/>loading.rs]
+            Menu[Menu System<br/>menu.rs]
+            Scene[Scene System<br/>scene.rs]
+            Bird[Bird System<br/>bird.rs]
+            Audio[Audio System<br/>audio.rs]
+        end
+        
+        GamePlugin --> Loading
+        GamePlugin --> Menu
+        GamePlugin --> Scene
+        GamePlugin --> Bird
+        GamePlugin --> Audio
+        
+        subgraph "Game State Management"
+            StateLoading[Loading State]
+            StateMenu[Menu State]
+            StatePlaying[Playing State]
+        end
+        
+        Loading --> StateLoading
+        Menu --> StateMenu
+        Scene --> StatePlaying
+        Bird --> StatePlaying
+        
+        subgraph "Scene Components"
+            DayClock[Day/Night Cycle<br/>DayClock Resource]
+            Trees[Tree Entities]
+            Sun[Directional Light<br/>Sun Component]
+            Camera[Orthographic Camera]
+            AudioListener[Spatial Audio Listener]
+        end
+        
+        Scene --> DayClock
+        Scene --> Trees
+        Scene --> Sun
+        Scene --> Camera
+        Scene --> AudioListener
+        
+        subgraph "Bird System Components"
+            BirdSpecies[17 Bird Species<br/>Enum: Diurnal/Nocturnal]
+            BirdEntity[Bird Entities<br/>Sphere Meshes]
+            BirdAI[Bird AI<br/>Flight Behavior]
+            BirdCalls[Spatial Audio Calls]
+            BirdTimer[Spawn Timer]
+        end
+        
+        Bird --> BirdSpecies
+        Bird --> BirdEntity
+        Bird --> BirdAI
+        Bird --> BirdCalls
+        Bird --> BirdTimer
+        
+        BirdAI --> DayClock
+        BirdAI --> Trees
+        BirdCalls --> AudioListener
+        
+        subgraph "Asset Loading"
+            AudioAssets[Audio Files<br/>OGG Format]
+            MeshAssets[3D Meshes]
+            MaterialAssets[Materials]
+        end
+        
+        Loading --> AudioAssets
+        Loading --> MeshAssets
+        Loading --> MaterialAssets
+        
+        Audio --> AudioAssets
+        Scene --> MeshAssets
+        Scene --> MaterialAssets
+        
+        subgraph "External Dependencies"
+            Bevy[Bevy Engine 0.18<br/>ECS Framework]
+            BevyKiraAudio[bevy_kira_audio<br/>Spatial Audio]
+            BevyAssetLoader[bevy_asset_loader<br/>Asset Management]
+        end
+        
+        GamePlugin -.-> Bevy
+        Audio -.-> BevyKiraAudio
+        Loading -.-> BevyAssetLoader
+        
+        subgraph "Platform Targets"
+            Desktop[Desktop<br/>Windows, Linux, macOS]
+            Web[Web<br/>WASM via Trunk]
+            Mobile[Mobile<br/>iOS, Android]
+        end
+        
+        GamePlugin -.->|cargo run| Desktop
+        GamePlugin -.->|trunk serve| Web
+        GamePlugin -.->|mobile workspace| Mobile
+    end
+    
+    style Main fill:#e1f5ff
+    style GamePlugin fill:#e1f5ff
+    style StatePlaying fill:#c8e6c9
+    style DayClock fill:#fff9c4
+    style BirdAI fill:#fff9c4
+    style Bevy fill:#f3e5f5
+    style BevyKiraAudio fill:#f3e5f5

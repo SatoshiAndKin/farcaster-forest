@@ -252,3 +252,75 @@ fn update_day_night_cycle(
     ambient.color = ambient_color;
     ambient.brightness = ambient_brightness;
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_day_clock_progress_bounds() {
+        let clock = DayClock { elapsed: 0.0 };
+        assert_eq!(clock.progress(), 0.0);
+
+        let clock = DayClock {
+            elapsed: DAY_DURATION / 2.0,
+        };
+        assert!((clock.progress() - 0.5).abs() < 0.001);
+
+        let clock = DayClock {
+            elapsed: DAY_DURATION,
+        };
+        assert!(clock.progress() < 0.001);
+    }
+
+    #[test]
+    fn test_day_clock_wraps_correctly() {
+        // Test that day clock wraps after full cycle
+        let clock = DayClock {
+            elapsed: DAY_DURATION * 2.5,
+        };
+        let progress = clock.progress();
+        assert!((0.0..1.0).contains(&progress));
+        assert!((progress - 0.5).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_sun_elevation_noon_is_positive() {
+        // At quarter day (noon), sun should be at highest point
+        let clock = DayClock {
+            elapsed: DAY_DURATION / 4.0,
+        };
+        assert!(clock.sun_elevation() > 0.0);
+    }
+
+    #[test]
+    fn test_sun_elevation_midnight_is_negative() {
+        // At three-quarters day (midnight), sun should be below horizon
+        let clock = DayClock {
+            elapsed: DAY_DURATION * 0.75,
+        };
+        assert!(clock.sun_elevation() < 0.0);
+    }
+
+    #[test]
+    fn test_sun_elevation_sunrise_is_zero() {
+        // At start of day (sunrise), sun should be near horizon
+        let clock = DayClock { elapsed: 0.0 };
+        assert!(clock.sun_elevation().abs() < 0.001);
+    }
+
+    #[test]
+    fn test_sun_elevation_sunset_is_zero() {
+        // At half day (sunset), sun should be near horizon
+        let clock = DayClock {
+            elapsed: DAY_DURATION / 2.0,
+        };
+        assert!(clock.sun_elevation().abs() < 0.001);
+    }
+
+    #[test]
+    fn test_day_duration_constant() {
+        // Ensure day duration is reasonable (between 30 seconds and 5 minutes)
+        const { assert!(DAY_DURATION >= 30.0 && DAY_DURATION <= 300.0) };
+    }
+}

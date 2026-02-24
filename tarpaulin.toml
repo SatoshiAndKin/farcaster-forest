@@ -1,0 +1,39 @@
+# Tarpaulin configuration for code coverage
+# Run with: cargo tarpaulin --config tarpaulin.toml
+
+[default]
+# Output directory for coverage reports
+out = ["Html", "Lcov"]
+output-dir = "coverage"
+
+# Run tests with all features
+all-features = true
+
+# Workspace support
+workspace = true
+
+# Minimum coverage threshold (percentage)
+# Fail if coverage is below this
+fail-under = 50.0
+
+# Timeout for tests (in seconds)
+timeout = 300
+
+# Don't count tests themselves toward coverage
+count-tests = false
+
+# Exclude paths from coverage
+exclude-files = [
+    "build.rs",
+    "examples/*",
+    "mobile/*",
+]
+
+# Follow symbolic links
+follow-exec = true
+
+# Run ignored tests
+ignored = false
+
+# Print verbose output
+verbose = true
