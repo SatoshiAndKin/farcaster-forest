@@ -23,7 +23,7 @@ jobs:
           key: ${{ runner.os }}-cargo-test-${{ hashFiles('**/Cargo.toml') }}
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: nightly-2025-12-19
+          toolchain: nightly-2026-02-23
       - name: Install alsa and udev
         run: sudo apt-get update; sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev libxkbcommon-x11-0 libwayland-dev libxkbcommon-dev
         if: runner.os == 'linux'
@@ -44,7 +44,7 @@ jobs:
           key: ubuntu-latest-cargo-all-doc-tests-${{ hashFiles('**/Cargo.toml') }}
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: nightly-2025-12-19
+          toolchain: nightly-2026-02-23
       - name: Install alsa and udev
         run: sudo apt-get update; sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev libxkbcommon-x11-0 libwayland-dev
       - name: Run doc tests with all features (this also compiles README examples)
@@ -64,7 +64,7 @@ jobs:
           key: ubuntu-latest-cargo-lint-${{ hashFiles('**/Cargo.toml') }}
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: nightly-2025-12-19
+          toolchain: nightly-2026-02-23
           components: rustfmt, clippy
       - name: Install alsa and udev
         run: sudo apt-get update; sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev libxkbcommon-x11-0 libwayland-dev
@@ -79,7 +79,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: nightly-2025-12-19
+          toolchain: nightly-2026-02-23
       - name: Install alsa and udev
         run: sudo apt-get update; sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev libxkbcommon-x11-0 libwayland-dev
       - name: Validate AGENTS.md commands
@@ -134,7 +134,7 @@ jobs:
           key: ubuntu-latest-cargo-docs-${{ hashFiles('**/Cargo.toml') }}
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: nightly-2025-12-19
+          toolchain: nightly-2026-02-23
       - name: Install alsa and udev
         run: sudo apt-get update; sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev libxkbcommon-x11-0 libwayland-dev
       - name: Generate documentation
@@ -155,13 +155,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: nightly-2025-12-19
+          toolchain: nightly-2026-02-23
       - name: Install cargo-udeps
         run: cargo install cargo-udeps --locked
       - name: Install alsa and udev
         run: sudo apt-get update; sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev libxkbcommon-x11-0 libwayland-dev
       - name: Check for unused dependencies
-        run: cargo +nightly-2025-12-19 udeps --all-targets
+        run: cargo +nightly-2026-02-23 udeps --all-targets
   
   duplicate-code:
     runs-on: ubuntu-latest
